@@ -17,6 +17,7 @@
     "deps": "yarn upgrade-interactive --latest"
   },
   "dependencies": {
+    "ant-design-vue": "^3.2.7",
     "pinia": "^2.0.14",
     "vue": "^3.2.25",
     "vue-router": "4"
