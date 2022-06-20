@@ -37,7 +37,8 @@
   />
   <br />
   <p>当前分页索引：{{ paging.current }}，当前分页大小：{{ paging.size }}</p>
-  <button @click="jumpPage(2, 32)">设置索引：2，分页：32</button>
+  <button @click="jumpPage(2)">设置索引：2</button>
+  <button @click="jumpSize(32)">设置分页：32</button>
   <hr />
 
   <br />
@@ -83,6 +84,15 @@
   <button @click="setFilterData">设置数据</button>
   <button @click="() => validate()">验证数据</button>
   <hr />
+
+  <br />
+  <p align="center">useRequest</p>
+  <p>
+    当前加载状态：{{ reqLoading }}，当前数据：{{ data }}，当前错误信息：{{
+      error
+    }}
+  </p>
+  <hr />
 </template>
 
 <script setup lang="ts">
@@ -99,12 +109,12 @@ import useToggle from './hooks/useToggle';
 import useLoading from './hooks/useLoading';
 import usePaging from './hooks/usePaging';
 import useFilter from './hooks/useFilter';
-// import useRequest from './hooks/useRequest';
+import useRequest from './hooks/useRequest';
 
 const { visible, showVisible, hideVisible } = useVisible();
 const { state, on, off } = useToggle();
 const { loading, showLoading, hideLoading } = useLoading();
-const { paging, jumpPage } = usePaging();
+const { paging, jumpPage, jumpSize } = usePaging();
 
 const testEditModalRef = ref<InstanceType<typeof TestEditModal>>();
 
@@ -164,17 +174,46 @@ const setFilterData = () => {
   formData.age = 9;
 };
 
-// const mockService = () => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve(true);
-//     }, 2000);
-//   });
-// };
+const mockService = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ title: 'xxx' });
+    }, 2000);
+  });
+};
 
-// const { run } = useRequest(mockService, {
-//   immediate: false,
-// });
+const {
+  data,
+  loading: reqLoading,
+  error,
+  run,
+} = useRequest(mockService, {
+  immediate: true,
+  defaultParams: {
+    name: '胡超',
+  },
+  onBefore: (params) => {
+    console.log('=====before=====');
+    console.log('params', params);
+  },
+  onSuccess: (res, params) => {
+    console.log('=====success=====');
+    console.log('res', res);
+    console.log('params', params);
+  },
+  onError: (err) => {
+    console.log('=====err=====');
+    console.log(err);
+  },
+  onFinally: (params, res, err) => {
+    console.log('=====finally=====');
+    console.log('params', params);
+    console.log('res', res);
+    console.log('err', err);
+  },
+});
+
+run(formData);
 </script>
 
 <style>
