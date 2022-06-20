@@ -46,6 +46,7 @@ const useEditModal = (formData: Records, option: EditModalOption) => {
   // 设置字典
   const setDict = (dictMap: Records): void => {
     const keys = Object.keys(dictMap);
+
     for (let i = 0, j = keys.length; i < j; i += 1) {
       dicts[keys[i]] = dictMap[keys[i]];
     }
@@ -61,8 +62,9 @@ const useEditModal = (formData: Records, option: EditModalOption) => {
     if (record) {
       isModalUpdate.value = true;
       const keys = Object.keys(record);
+
+      // 不使用拦截器，记录编辑数据
       if (typeof editIntercept !== 'function') {
-        // 不使用拦截器，记录编辑数据
         for (let i = 0, j = keys.length; i < j; i += 1) {
           formData[keys[i]] = record[keys[i]];
         }
@@ -87,6 +89,7 @@ const useEditModal = (formData: Records, option: EditModalOption) => {
       if (typeof beforeSubmit === 'function') {
         // 处理请求前，逻辑处理
         const beforeSubmitData = beforeSubmit(formData);
+
         if (!beforeSubmitData) return false;
       }
 

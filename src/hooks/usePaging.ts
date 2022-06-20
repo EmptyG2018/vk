@@ -12,15 +12,24 @@ const usePaging = (option: PagingOption = { current: 1, size: 16 }) => {
   // 分页跳转
   const jumpPage = (
     current: number,
-    size: number,
     fn?: (paging: PagingOption) => void
   ): void => {
     paging.current = current;
-    paging.size = size;
+
     if (typeof fn === 'function') fn(paging);
   };
 
-  return { paging, jumpPage };
+  // 分页跳转
+  const jumpSize = (
+    size: number,
+    fn?: (paging: PagingOption) => void
+  ): void => {
+    paging.size = size;
+
+    if (typeof fn === 'function') fn(paging);
+  };
+
+  return { paging, jumpPage, jumpSize };
 };
 
 export default usePaging;

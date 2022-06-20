@@ -12,6 +12,7 @@ type FilterOption = {
 
 const useFilter = (formData: Records, option: FilterOption) => {
   const { rules, service } = option;
+
   const { resetFields, validate, validateInfos } = Form.useForm(
     formData,
     rules
