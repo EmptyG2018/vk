@@ -21,15 +21,12 @@ type EditModalOption = {
 };
 
 const useEditModal = (formData: Records, option: EditModalOption) => {
+  const { title, rules, visible, beforeSubmit, addSubmit, editSubmit } = option;
   const {
-    title,
-    rules,
     visible: modalVisible,
-    beforeSubmit,
-    addSubmit,
-    editSubmit,
-  } = option;
-  const { visible, showVisible, hideVisible } = useVisible(modalVisible);
+    showVisible: showModalVisible,
+    hideVisible: hideModalVisible,
+  } = useVisible(visible);
   const { resetFields, validate, validateInfos } = Form.useForm(
     formData,
     rules
@@ -92,21 +89,25 @@ const useEditModal = (formData: Records, option: EditModalOption) => {
         const beforeSubmitData = beforeSubmit(formData);
         if (!beforeSubmitData) return false;
       }
+
+      // 处理修改请求操作
       if (isModalUpdate.value && typeof editSubmit === 'function')
-        editSubmit(formData.editData, hideVisible);
+        editSubmit(formData.editData, hideModalVisible);
+
+      // 处理新增请求操作
       if (!isModalUpdate.value && typeof addSubmit === 'function')
-        addSubmit(formData.addData, hideVisible);
+        addSubmit(formData.addData, hideModalVisible);
     });
   };
 
   return {
-    visible,
+    visible: modalVisible,
     dicts,
     modalTitle,
     isModalUpdate,
     validateInfos,
-    openModal: showVisible,
-    closeModal: hideVisible,
+    openModal: showModalVisible,
+    closeModal: hideModalVisible,
     setDict,
     setRecord,
     submit,

@@ -1,8 +1,8 @@
 import { ref } from 'vue';
 
-const useVisible = (state: boolean = false) => {
+const useVisible = (status: boolean = false) => {
   // 当前显示
-  const visible = ref<boolean>(state);
+  const visible = ref<boolean>(status);
 
   // 设置隐藏
   const showVisible = (): void => {
