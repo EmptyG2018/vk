@@ -6,13 +6,18 @@ type Records = {
   [key: string]: any;
 };
 
+export type BeforeFormData = {
+  addData?: Records;
+  editData?: Records;
+};
+
 type EditModalOption = {
   title: string;
   rules?: Records | Ref<Records>;
   visible: boolean;
-  beforeSubmit?: () => void;
-  addSubmit?: () => void;
-  editSubmit?: () => void;
+  beforeSubmit?: (data: BeforeFormData) => Records | false;
+  addSubmit?: (data: Records | undefined, done: () => void) => void;
+  editSubmit?: (data: Records | undefined, done: () => void) => void;
 };
 
 const useEditModal = (formData: Records, option: EditModalOption) => {
@@ -51,9 +56,9 @@ const useEditModal = (formData: Records, option: EditModalOption) => {
 
   // 设置记录数据
   const setRecord = (
-    record: Records,
-    editIntercept: (record: Records) => void,
-    addIntercept: () => void
+    record?: Records,
+    editIntercept?: (record: Records) => void,
+    addIntercept?: () => void
   ) => {
     resetFields();
     if (record) {
@@ -81,22 +86,16 @@ const useEditModal = (formData: Records, option: EditModalOption) => {
   // 提交
   const submit = () => {
     validate().then(async () => {
-      let addData;
-      let editdata;
+      const formData: BeforeFormData = {};
       if (typeof beforeSubmit === 'function') {
-        const beforeSubmitOk = beforeSubmit((allFormData = {}) => {
-          addFormData = allFormData?.addFormData;
-          editFormData = allFormData?.editFormData;
-        });
-        if (!beforeSubmitOk) return false;
+        // 处理请求前，逻辑处理
+        const beforeSubmitData = beforeSubmit(formData);
+        if (!beforeSubmitData) return false;
       }
-
-      if (isModalUpdate.value) {
-        if (typeof editService === 'function')
-          editSubmit(editFormData, closeModal);
-      } else if (typeof addService === 'function')
-        addSubmit(addFormData, closeModal);
-      return true;
+      if (isModalUpdate.value && typeof editSubmit === 'function')
+        editSubmit(formData.editData, hideVisible);
+      if (!isModalUpdate.value && typeof addSubmit === 'function')
+        addSubmit(formData.addData, hideVisible);
     });
   };
 

@@ -1,7 +1,4 @@
 <template>
-  <span @click="open">
-    <slot></slot>
-  </span>
   <a-modal
     :visible="visible"
     :mask-closable="false"
@@ -11,6 +8,7 @@
     @cancel="closeModal"
     @ok="submit"
   >
+    {{ dicts }}
     <a-form
       label-align="right"
       :label-col="{ span: 6 }"
@@ -37,14 +35,7 @@
 </template>
 <script setup lang="ts">
 import { reactive } from 'vue';
-import useEditModal from './hooks/useEditModal';
-
-const props = defineProps({
-  hasTag: {
-    type: Boolean,
-    default: true,
-  },
-});
+import useEditModal from '../hooks/useEditModal';
 
 // 弹窗标题
 const title = '素材相册';
@@ -70,21 +61,19 @@ const formData = reactive({
   title: '',
   name: '',
 });
-
-const beforeSubmit = (done) => {
-  console.log('请求前操作');
-  done.editAdd = {};
-  done.addData = {};
-  return done;
-};
-
-const addService = async (parmData, done) => {
-  console.log('新增', parmData);
+const addSubmit = async (
+  data: { [key: string]: any } | undefined,
+  done: () => void
+) => {
+  console.log('新增', data);
   done();
 };
 
-const editService = async (parmData, done) => {
-  console.log('修改', parmData);
+const editSubmit = async (
+  data: { [key: string]: any } | undefined,
+  done: () => void
+) => {
+  console.log('修改', data);
   done();
 };
 
@@ -101,47 +90,21 @@ const {
 } = useEditModal(formData, {
   title,
   rules,
-  modalVisible: false,
-  beforeSubmit,
-  addService,
-  editService,
+  visible: false,
+  addSubmit,
+  editSubmit,
 });
 
-// 设置参数
-const setRecord = (data) => {
+const setRecord = (data: any) => {
   customRecord(
     data,
     (record) => {
-      formData.materialId = record.materialId;
-      formData.contentType = record.contentType;
-      formData.title = record.title;
-      formData.url = record.url;
-      fileList.value = [
-        {
-          uid: '-1',
-          status: 'done',
-          fileType: record.contentType,
-          url: record.url,
-        },
-      ];
-
-      // 需要处理分类数据类型
-      const menuId = `${record.menuId}`;
-      formData.menuId = menuId
-        ? deepFindMenuChain(dicts?.menus || [], menuId).reverse()
-        : [];
-
-      // 存在标签功能时，才回显数据
-      if (props.hasTag) {
-        const tags = record.tags
-          ? record.tags.split(',').map((item) => item * 1)
-          : [];
-        formData.tags = tags;
-      }
+      formData.title = '11111';
+      formData.name = '22222';
     },
     () => {
-      fileList.value = [];
-      formData.menuId = [];
+      formData.title = '3333';
+      formData.name = '4444';
     }
   );
 };
