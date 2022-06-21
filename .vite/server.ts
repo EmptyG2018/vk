@@ -4,11 +4,9 @@ const server: ServerOptions = {
   host: '0.0.0.0',
   proxy: {
     '/proxy': {
-      // target: 'http://106.52.183.51:9191',
-      target: 'http://192.168.31.114',
-      // target: 'https://gxw.meixioa.com',
+      target: 'http://47.112.102.229:9009',
       changeOrigin: true,
-      rewrite: (path) => path.replace(/\/proxy/, '/api'),
+      rewrite: (path) => path.replace(/\/proxy/, '/'),
     },
   },
 };

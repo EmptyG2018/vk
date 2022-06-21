@@ -56,7 +56,14 @@
 </template>
 
 <script setup lang="ts">
+import { GetStatistics } from './services/statistics';
+import useRequest from './hooks/useRequest';
 import RankingList from './components/RankingList.vue';
 import IndustryRatio from './components/IndustryRatio.vue';
 import RegionWorkComplete from './components/RegionWorkComplete.vue';
+
+const { data, loading } = useRequest(GetStatistics, {
+  immediate: true,
+});
+
 </script>

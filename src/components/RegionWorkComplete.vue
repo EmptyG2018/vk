@@ -25,6 +25,7 @@
 import { ref, reactive, computed, onMounted, watchEffect } from 'vue';
 import * as echarts from 'echarts';
 import useRequest from '../hooks/useRequest';
+// import { GetDemo } from '../services/statistics';
 
 const props = withDefaults(
   defineProps<{
@@ -118,6 +119,9 @@ const mockData = (params: any) => {
 
 const { data, loading, run } = useRequest(mockData, {
   immediate: false,
+  onSuccess: function (res) {
+    console.log('xxx', res);
+  },
 });
 
 const echatData = computed(() => {
